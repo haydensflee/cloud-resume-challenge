@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 5
 
     # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
     LoggingConfig:
@@ -23,22 +23,35 @@ Resources:
         IndexDocument: resume.html
       BucketName: my-fantastic-website-hl
 
-  MyRoute53RecordSet:
-    Type: "AWS::Route53::RecordSet"
+  MyRoute53Record:
+    Type: "AWS::Route53::RecordSetGroup"
     Properties:
       HostedZoneId: Z03375102XLVSEZ15NV0M
-      Name: website.hayden-lee.com.
-      Type: A
-      AliasTarget:
-        DNSName: !GetAtt MyDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2 # This is the CloudFront hosted zone ID for us-east-1
+      RecordSets:
+        - Name: website.hayden-lee.com
+          Type: A
+          AliasTarget:
+            DNSName: !GetAtt MyDistribution.DomainName
+            HostedZoneId: Z2FDTNDATAQYW2 # This is the CloudFront hosted zone ID for us-east-1
+            EvaluateTargetHealth: false  # ✅ REQUIRED
+
+  MyCertificate:
+    Type: "AWS::CertificateManager::Certificate"
+    Properties:
+      DomainName: website.hayden-lee.com
+      ValidationMethod: DNS
 
   MyDistribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
       DistributionConfig:
+        ViewerCertificate:
+          AcmCertificateArn: !Ref MyCertificate
+          SslSupportMethod: sni-only
+        Aliases:
+          - website.hayden-lee.com
         DefaultCacheBehavior:
-          ViewerProtocolPolicy: allow-all
+          ViewerProtocolPolicy: redirect-to-https
           TargetOriginId: my-fantastic-website-hl.s3-website-us-east-1.amazonaws.com
           DefaultTTL: 0
           MinTTL: 0
