@@ -26,6 +26,6 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
 
       - name: test put-function
-        run: cd putt-function && python -m unittest discover
+        run: cd put-function && python -m unittest discover
         env:
           AWS_DEFAULT_REGION: us-east-1
