@@ -22,6 +22,8 @@ jobs:
 
       - name: test get-function
         run: cd get-function && python -m unittest discover
+        env:
+          AWS_DEFAULT_REGION: us-east-1
 
       # - name: test put-function
       #   run: cd cloud-resume-challenge/put-function && python -m unittest discover
