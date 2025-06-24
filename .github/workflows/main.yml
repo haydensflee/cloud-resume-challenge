@@ -21,7 +21,7 @@ jobs:
       #     pip install -r requirements.txt
 
       - name: test get-function
-        run: cd cloud-resume-challenge/get-function && python -m unittest discover
+        run: cd get-function && python -m unittest discover
 
       # - name: test put-function
       #   run: cd cloud-resume-challenge/put-function && python -m unittest discover
