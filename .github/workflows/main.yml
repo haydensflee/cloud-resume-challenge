@@ -62,7 +62,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - uses: jakejarvis/s3-sync-action@master
         with:
-          args: --delete
+          args: --acl public-read --follow-symlinks --delete
         env:
           AWS_S3_BUCKET: my-fantastic-website-hl
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
